@@ -50,12 +50,14 @@ TEMPLATES = [
 WSGI_APPLICATION = 'Models_python.wsgi.application'
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'mssql',
         'NAME': 'test',
-        'USER': 'postgres',
-        'PASSWORD': '2006',
-        'HOST': 'localhost', 
-        'PORT': '5432',      
+        'HOST': 'localhost',
+        'OPTIONS': {
+            'driver': 'ODBC Driver 18 for SQL Server',
+            'trusted_connection': 'yes',
+            'extra_params': 'TrustServerCertificate=yes;',
+        },
     }
 }
 
@@ -74,7 +76,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True
