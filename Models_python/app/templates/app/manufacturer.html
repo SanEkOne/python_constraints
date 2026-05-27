@@ -1,0 +1,86 @@
+{% extends "app/layout.html" %}
+
+{% block content %}
+<div class="authors-page">
+
+    <div class="page-title">Виробники</div>
+
+    {% if message %}
+    <div class="flash">✓ {{ message }}</div>
+    {% endif %}
+
+    <div class="add-card">
+        <div class="card-label">Додати нового виробника</div>
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="create">
+            <div class="add-form-row">
+                <div class="field-group">
+                    <label>Назва <span style="color: red;">*</span></label>
+                    <input type="text" name="name" placeholder="Назва компанії" required>
+                </div>
+                <div class="field-group">
+                    <label>Країна <span style="color: red;">*</span></label>
+                    <input type="text" name="country" placeholder="Країна походження" required>
+                </div>
+                <div class="field-group">
+                    <label>Веб-сайт</label>
+                    <input type="url" name="website" placeholder="https://example.com">
+                </div>
+                <div class="field-group">
+                    <label>Email</label>
+                    <input type="email" name="email" placeholder="info@example.com">
+                </div>
+                <div class="field-group">
+                    <label>Рік заснування</label>
+                    <input type="number" name="established_year" min="1800" max="2026" placeholder="2000">
+                </div>
+
+                <button type="submit" class="btn btn-add">+ Додати</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="table-card">
+        {% if manufacturers %}
+        <table>
+            <tbody>
+                {% for man in manufacturers %}
+                <tr style="border: solid 1px">
+                    <td class="id-cell">#{{ man.id }}</td>
+                    <td class="name-cell" colspan="3">
+                        <form method="POST" class="edit-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="update">
+                            <input type="hidden" name="manufacturer_id" value="{{ man.id }}">
+
+                            <input type="text" name="name" value="{{ man.name }}" placeholder="Назва" required>
+                            <input type="text" name="country" value="{{ man.country }}" placeholder="Країна" required>
+                            <input type="url" name="website" value="{{ man.website|default_if_none:'' }}" placeholder="Сайт">
+                            <input type="email" name="email" value="{{ man.email|default_if_none:'' }}" placeholder="Email">
+                            <input type="number" name="established_year" value="{{ man.established_year|default_if_none:'' }}" min="1800" max="2026" placeholder="Рік">
+
+                            <button type="submit" class="btn btn-save">Оновити дані</button>
+                        </form>
+                    </td>
+                    <td class="actions-cell">
+                        <form method="POST" onsubmit="return confirm('Видалити виробника {{ man.name }}?')">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="delete">
+                            <input type="hidden" name="manufacturer_id" value="{{ man.id }}">
+                            <button type="submit" class="btn btn-delete">Видалити</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% else %}
+        <div class="empty-state">
+            <p>Виробників поки ще немає. Додайте першого!</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

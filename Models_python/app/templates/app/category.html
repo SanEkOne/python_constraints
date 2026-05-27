@@ -1,0 +1,68 @@
+{% extends "app/layout.html" %}
+
+{% block content %}
+
+<div class="authors-page">
+
+    <div class="page-title">Категорії</div>
+
+    {% if message %}
+    <div class="flash">✓ {{ message }}</div>
+    {% endif %}
+
+    <div class="add-card">
+        <div class="card-label">Додати нову категорію</div>
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="create">
+            <div class="add-form-row">
+                <div class="field-group">
+                    <label>Назва</label>
+                    <input type="text" name="name" placeholder="Назва категорії" required>
+                </div>
+
+                <button type="submit" class="btn btn-add">+ Додати</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="table-card">
+        {% if categories %}
+        <table>
+            <tbody>
+                {% for category in categories %}
+                <tr style="border: solid 1px">
+                    <td class="id-cell">#{{ category.id }}</td>
+                    <td class="name-cell" colspan="3">
+                        <form method="POST" class="edit-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="update">
+                            <input type="hidden" name="category_id" value="{{ category.id }}">
+                            <input type="text" name="name" value="{{ category.name }}" placeholder="Імʼя" required>
+                            
+                            <button type="submit" class="btn btn-save">Оновити дані</button>
+                        </form>
+                    </td>
+                    <td class="actions-cell">
+                        <form method="POST" onsubmit="return confirm('Видалити {{ category.name }}?')">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="delete">
+                            <input type="hidden" name="category_id" value="{{ category.id }}">
+                            <button type="submit" class="btn btn-delete">Видалити</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% else %}
+        <div class="empty-state">
+            <p>Продуктів поки ще немає. Додайте перший!</p>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+
+{% endblock %}
